@@ -9,56 +9,10 @@ import {
   FormControl,
   TextField,
   FormHelperText,
-  makeStyles,
-  Hidden,
 } from "@material-ui/core";
 import { register } from "./store/utils/thunkCreators";
-import bubbleSvg from "./images/bubble.svg";
-import bgImg from "./images/bg-img.png";
-
-const useStyles = makeStyles({
-  bg: {
-    backgroundImage: `linear-Gradient(to top, rgba(58, 142, 255, 0.85), rgba(135, 185, 255, 0.85)), url('${bgImg}')`,
-    backgroundSize: "cover",
-  },
-  main: {
-    height: "100vh",
-  },
-  bubble: {
-    margin: "-28% 0 10% 0",
-  },
-  lead: {
-    width: "75%",
-    color: "white",
-    fontSize: "1.5rem",
-  },
-  signIn: {
-    display: "flex",
-    color: "#ccc",
-    width: "90%",
-    margin: "2rem 0",
-    justifyContent: "flex-end",
-  },
-  signInText: {
-    lineHeight: "2.5",
-    marginRight: "4rem",
-  },
-  form: {
-    width: "70%",
-    margin: "1rem auto",
-  },
-  createBtn: {
-    display: "flex",
-    margin: "2rem auto",
-    width: "10rem",
-  },
-  formControl: {
-    margin: "1rem auto",
-  },
-  label: {
-    color: "#ccc",
-  },
-});
+import useStyles from "./layout/loginRegisterStyles";
+import LandingPageIllustration from "./layout/LandingPageIllustration";
 
 const Login = (props) => {
   const history = useHistory();
@@ -87,46 +41,26 @@ const Login = (props) => {
 
   return (
     <Grid container direction="row" className={classes.main}>
-      <Hidden xsDown smDown>
-        <Grid
-          className={classes.bg}
-          direction="column"
-          container
-          md={5}
-          justify="center"
-          alignItems="center"
-          item
-        >
-          <img
-            className={classes.bubble}
-            alt="Message Bubble"
-            src={bubbleSvg}
-          />
-          <Typography
-            variant="h5"
-            component="h2"
-            align="center"
-            color="textSecondary"
-            className={classes.lead}
-          >
-            Converse with anyone with any language
-          </Typography>
-        </Grid>
-      </Hidden>
+      <LandingPageIllustration classes={classes} />
 
+      {/* Top Bar */}
       <Grid md={7} container item alignItems="flex-start" direction="column">
-        <Box className={classes.signIn}>
-          <Typography variant="button" className={classes.signInText}>
+        <Box className={classes.topBar}>
+          <Typography variant="button" className={classes.topBarText}>
             Need to log in?
           </Typography>
           <Button onClick={() => history.push("/login")} color="primary">
             Login
           </Button>
         </Box>
-        <form onSubmit={handleRegister} className={classes.form}>
+
+        {/* Register Form */}
+        <form onSubmit={handleRegister} className={classes.formRegister}>
           <Typography variant="h5" component="h1">
             Create an account.
           </Typography>
+
+          {/* Username Field */}
           <Grid>
             <FormControl fullWidth className={classes.formControl}>
               <TextField
@@ -139,6 +73,8 @@ const Login = (props) => {
               />
             </FormControl>
           </Grid>
+
+          {/* Email Field */}
           <Grid>
             <FormControl fullWidth className={classes.formControl}>
               <TextField
@@ -151,6 +87,8 @@ const Login = (props) => {
               />
             </FormControl>
           </Grid>
+
+          {/* Password Fields */}
           <Grid>
             <FormControl
               className={classes.formControl}
@@ -171,6 +109,7 @@ const Login = (props) => {
               </FormHelperText>
             </FormControl>
           </Grid>
+
           <Grid>
             <FormControl
               className={classes.formControl}
@@ -191,13 +130,15 @@ const Login = (props) => {
               </FormHelperText>
             </FormControl>
           </Grid>
+
+          {/* Submit/Create Button */}
           <Box>
             <Button
               type="submit"
               variant="contained"
               size="large"
               color="primary"
-              className={classes.createBtn}
+              className={classes.submitBtn}
             >
               Create
             </Button>
