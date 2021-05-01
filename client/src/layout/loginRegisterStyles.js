@@ -13,9 +13,8 @@ const useStyles = makeStyles({
     margin: "-28% 0 10% 0",
   },
   lead: {
-    width: "75%",
     color: "white",
-    fontSize: "1.5rem",
+    fontSize: "2rem",
   },
   topBar: {
     display: "flex",
@@ -25,20 +24,22 @@ const useStyles = makeStyles({
     justifyContent: "flex-end",
   },
   topBarText: {
-    lineHeight: "2.5",
+    fontWeight: "normal",
+    lineHeight: "4",
     marginRight: "4rem",
   },
   formRegister: {
     width: "70%",
-    margin: "1rem auto",
+    margin: "auto auto",
   },
   formLogin: {
     width: "70%",
-    margin: "4rem auto",
+    margin: "auto auto",
   },
   submitBtn: {
     display: "flex",
     margin: "2rem auto",
+    padding: "1rem",
     width: "10rem",
   },
   formControl: {

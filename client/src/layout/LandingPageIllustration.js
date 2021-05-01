@@ -4,7 +4,7 @@ import bubbleSvg from "../images/bubble.svg";
 
 const LandingPageIllustration = ({ classes }) => {
   return (
-    <Hidden xsDown smDown>
+    <Hidden smDown>
       <Grid
         className={classes.bg}
         direction="column"
@@ -21,8 +21,9 @@ const LandingPageIllustration = ({ classes }) => {
           align="center"
           color="textSecondary"
           className={classes.lead}
+          style={{ whiteSpace: "pre-line" }}
         >
-          Converse with anyone with any language
+          Converse with anyone{"\n"} with any language
         </Typography>
       </Grid>
     </Hidden>

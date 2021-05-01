@@ -9,6 +9,10 @@ export const theme = createMuiTheme({
       letterSpacing: 0,
       fontWeight: "bold",
     },
+    h5: {
+      fontWeight: "bold",
+      fontSize: "2rem",
+    },
   },
   overrides: {
     MuiInput: {

@@ -7,7 +7,6 @@ import {
   Typography,
   Button,
   FormControl,
-  Link,
   TextField,
 } from "@material-ui/core";
 import { login } from "./store/utils/thunkCreators";
@@ -83,18 +82,6 @@ const Login = (props) => {
                 required
               />
             </FormControl>
-            <Link
-              component="button"
-              variant="body2"
-              className={classes.forgotPassLink}
-              onClick={(e) => {
-                e.preventDefault();
-                console.log("Forgot password not implemented yet.");
-                // history.push("/forgot")
-              }}
-            >
-              Forgot?
-            </Link>
           </Grid>
 
           {/* Submit/Create Button */}
