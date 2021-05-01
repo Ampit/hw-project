@@ -2,13 +2,18 @@ const createError = require("http-errors");
 const express = require("express");
 const { join } = require("path");
 const logger = require("morgan");
+const csrf = require("csurf");
 const jwt = require("jsonwebtoken");
 const session = require("express-session");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const db = require("./db");
 const { User } = require("./db/models");
 // create store for sessions to persist in database
 const sessionStore = new SequelizeStore({ db });
+// csrf
+const csrfProtection = csrf({ cookie: true });
 
 const { json, urlencoded } = express;
 
@@ -17,10 +22,12 @@ const app = express();
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
+app.use(cors({ credentials: true }));
+app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
 app.use(function (req, res, next) {
-  const token = req.headers["x-access-token"];
+  const token = req.cookies["x-access-token"];
   if (token) {
     jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
       if (err) {
@@ -38,9 +45,17 @@ app.use(function (req, res, next) {
   }
 });
 
+app.all("*", csrfProtection, function (req, res, next) {
+  // set csrf token cookie on each request
+  res.cookie("csrf-token", req.csrfToken(), {
+    sameSite: "Lax",
+  });
+  next();
+});
+
 // require api routes here after I create them
-app.use("/auth", require("./routes/auth"));
-app.use("/api", require("./routes/api"));
+app.use("/auth", csrfProtection, require("./routes/auth"));
+app.use("/api", csrfProtection, require("./routes/api"));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -26,6 +26,12 @@ router.post("/register", async (req, res, next) => {
       process.env.SESSION_SECRET,
       { expiresIn: 86400 }
     );
+    // set httponly cookie
+    res.cookie("x-access-token", token, {
+      sameSite: "Lax",
+      httpOnly: true,
+    });
+
     res.json({
       ...user.dataValues,
       token,
@@ -64,6 +70,12 @@ router.post("/login", async (req, res, next) => {
         process.env.SESSION_SECRET,
         { expiresIn: 86400 }
       );
+      // set httponly cookie
+      res.cookie("x-access-token", token, {
+        sameSite: "Lax",
+        httpOnly: true,
+      });
+
       res.json({
         ...user.dataValues,
         token,
@@ -75,6 +87,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.delete("/logout", (req, res, next) => {
+  res.clearCookie("x-access-token");
   res.sendStatus(204);
 });
 
