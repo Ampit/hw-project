@@ -10,10 +10,13 @@ import {
   TextField,
 } from "@material-ui/core";
 import { login } from "./store/utils/thunkCreators";
+import useStyles from "./layout/loginRegisterStyles";
+import LandingPageIllustration from "./layout/LandingPageIllustration";
 
 const Login = (props) => {
   const history = useHistory();
   const { user, login } = props;
+  const classes = useStyles();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -28,40 +31,77 @@ const Login = (props) => {
   }
 
   return (
-    <Grid container justify="center">
-      <Box>
-        <Grid container item>
-          <Typography>Need to register?</Typography>
-          <Button onClick={() => history.push("/register")}>Register</Button>
-        </Grid>
-        <form onSubmit={handleLogin}>
+    <Grid container direction="row" className={classes.main}>
+      <LandingPageIllustration classes={classes} />
+
+      {/* Top Bar */}
+      <Grid md={7} container item alignItems="flex-start" direction="column">
+        <Box className={classes.topBar}>
+          <Typography variant="button" className={classes.topBarText}>
+            Need to register?
+          </Typography>
+          <Button
+            className={classes.topBarBtn}
+            onClick={() => history.push("/register")}
+            color="primary"
+          >
+            Register
+          </Button>
+        </Box>
+
+        {/* Login Form */}
+        <form onSubmit={handleLogin} className={classes.formLogin}>
+          <Typography variant="h5" component="h1">
+            Welcome back!
+          </Typography>
+
+          {/* Username Field */}
           <Grid>
-            <Grid>
-              <FormControl margin="normal" required>
-                <TextField
-                  aria-label="username"
-                  label="Username"
-                  name="username"
-                  type="text"
-                />
-              </FormControl>
-            </Grid>
-            <FormControl margin="normal" required>
+            <FormControl fullWidth className={classes.formControl}>
               <TextField
-                label="password"
+                aria-label="username"
+                label="Username"
+                name="username"
+                type="text"
+                InputLabelProps={{ classes: { root: classes.label } }}
+                required
+              />
+            </FormControl>
+          </Grid>
+
+          {/* Password Fields */}
+          <Grid>
+            <FormControl
+              margin="normal"
+              className={classes.formControl}
+              fullWidth
+            >
+              <TextField
+                label="Password"
                 aria-label="password"
                 type="password"
                 name="password"
+                InputLabelProps={{ classes: { root: classes.label } }}
+                inputProps={{ minLength: 6 }}
+                required
               />
             </FormControl>
-            <Grid>
-              <Button type="submit" variant="contained" size="large">
-                Login
-              </Button>
-            </Grid>
           </Grid>
+
+          {/* Submit/Create Button */}
+          <Box>
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              color="primary"
+              className={classes.submitBtn}
+            >
+              Login
+            </Button>
+          </Box>
         </form>
-      </Box>
+      </Grid>
     </Grid>
   );
 };
