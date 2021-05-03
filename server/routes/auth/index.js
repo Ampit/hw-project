@@ -28,7 +28,6 @@ router.post("/register", async (req, res, next) => {
     );
     // set httponly cookie
     res.cookie("x-access-token", token, {
-      sameSite: "Lax",
       httpOnly: true,
     });
 
@@ -72,7 +71,6 @@ router.post("/login", async (req, res, next) => {
       );
       // set httponly cookie
       res.cookie("x-access-token", token, {
-        sameSite: "Lax",
         httpOnly: true,
       });
 

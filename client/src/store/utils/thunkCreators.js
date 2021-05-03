@@ -10,8 +10,8 @@ import {
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
-  const token = Cookies.get("csrf-token");
-  config.headers["CSRF-Token"] = token;
+  const token = Cookies.get("x-csrf-token");
+  config.headers["x-csrf-token"] = token;
 
   return config;
 });

@@ -47,9 +47,7 @@ app.use(function (req, res, next) {
 
 app.all("*", csrfProtection, function (req, res, next) {
   // set csrf token cookie on each request
-  res.cookie("csrf-token", req.csrfToken(), {
-    sameSite: "Lax",
-  });
+  res.cookie("x-csrf-token", req.csrfToken());
   next();
 });
 
