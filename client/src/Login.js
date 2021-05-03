@@ -40,7 +40,11 @@ const Login = (props) => {
           <Typography variant="button" className={classes.topBarText}>
             Need to register?
           </Typography>
-          <Button onClick={() => history.push("/register")} color="primary">
+          <Button
+            className={classes.topBarBtn}
+            onClick={() => history.push("/register")}
+            color="primary"
+          >
             Register
           </Button>
         </Box>

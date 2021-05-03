@@ -49,7 +49,11 @@ const Login = (props) => {
           <Typography variant="button" className={classes.topBarText}>
             Need to log in?
           </Typography>
-          <Button onClick={() => history.push("/login")} color="primary">
+          <Button
+            className={classes.topBarBtn}
+            onClick={() => history.push("/login")}
+            color="primary"
+          >
             Login
           </Button>
         </Box>
