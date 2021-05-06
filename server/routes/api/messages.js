@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { Conversation, Message } = require("../../db/models");
 const onlineUsers = require("../../onlineUsers");
+const { Op } = require("sequelize");
 
 // expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
 router.post("/", async (req, res, next) => {
@@ -34,6 +35,8 @@ router.post("/", async (req, res, next) => {
         sender.online = true;
       }
     }
+    // check if the recipient has the conversation as active set readStatus to true
+
     const message = await Message.create({
       senderId,
       text,
@@ -42,6 +45,40 @@ router.post("/", async (req, res, next) => {
     res.json({ message, sender });
   } catch (error) {
     next(error);
+  }
+});
+
+router.put("/", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const senderId = req.user.id;
+    const { recipientId } = req.body;
+
+    let conversation = await Conversation.findConversation(
+      senderId,
+      recipientId
+    );
+
+    const [, affectedRows] = await Message.update(
+      {
+        readStatus: true,
+      },
+      {
+        where: {
+          [Op.and]: {
+            senderId: recipientId,
+            conversationId: conversation.id,
+          },
+        },
+        returning: true,
+      }
+    );
+
+    res.json(affectedRows);
+  } catch (error) {
+    console.error(error);
   }
 });
 

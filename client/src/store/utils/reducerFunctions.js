@@ -81,3 +81,20 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+export const markMessagesReadInStore = (state, { messages, recipientId }) => {
+  return state.map((convo) => {
+    if (convo.otherUser.id === recipientId) {
+      const convoCopy = { ...convo };
+      messages.forEach((msgToMarkAsRead) => {
+        let msgToUpdate = convoCopy.messages.find(
+          (msg) => msg.id === msgToMarkAsRead.id
+        );
+        msgToUpdate.readStatus = true;
+      });
+
+      return convoCopy;
+    }
+    return convo;
+  });
+};
