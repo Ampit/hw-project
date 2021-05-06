@@ -121,14 +121,13 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 // mark messages as read
 const markMessagesReadServer = async (recipientId) => {
-  const { data } = await axios.put("/api/messages", { recipientId });
-  return data;
+  await axios.put("/api/messages", { recipientId });
 };
 
 export const markMsgsRead = (recipientId) => async (dispatch) => {
   try {
-    const data = await markMessagesReadServer(recipientId);
-    dispatch(markMessagesRead(data, recipientId));
+    await markMessagesReadServer(recipientId);
+    dispatch(markMessagesRead(recipientId));
   } catch (error) {
     console.error(error);
   }

@@ -23,13 +23,7 @@ const styles = {
 class Chat extends Component {
   handleClick = async (conversation) => {
     await this.props.setActiveChat(conversation.otherUser.username);
-    const unreadCount = conversation.messages.filter(
-      (message) =>
-        message.senderId === conversation.otherUser.id &&
-        message.readStatus === false
-    ).length;
-
-    if (unreadCount !== 0)
+    if (this.props.conversation.unreadCount > 0)
       await this.props.markMsgsRead(conversation.otherUser.id);
   };
 
@@ -47,7 +41,10 @@ class Chat extends Component {
           online={otherUser.online}
           sidebar={true}
         />
-        <ChatContent conversation={this.props.conversation} />
+        <ChatContent
+          conversation={this.props.conversation}
+          unreadCount={this.props.conversation.unreadCount}
+        />
       </Box>
     );
   }

@@ -61,7 +61,7 @@ router.put("/", async (req, res, next) => {
       recipientId
     );
 
-    const [, affectedRows] = await Message.update(
+    await Message.update(
       {
         readStatus: true,
       },
@@ -76,7 +76,7 @@ router.put("/", async (req, res, next) => {
       }
     );
 
-    res.json(affectedRows);
+    res.sendStatus(204);
   } catch (error) {
     console.error(error);
   }

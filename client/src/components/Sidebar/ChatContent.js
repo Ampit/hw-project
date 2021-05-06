@@ -38,13 +38,8 @@ const useStyles = makeStyles((theme) => ({
 const ChatContent = (props) => {
   const classes = useStyles();
 
-  const { conversation } = props;
+  const { conversation, unreadCount } = props;
   const { latestMessageText, otherUser } = conversation;
-  const unreadCount = conversation.messages.filter(
-    (message) =>
-      message.senderId === conversation.otherUser.id &&
-      message.readStatus === false
-  ).length;
 
   return (
     <Box className={classes.root}>
@@ -56,7 +51,7 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      {unreadCount !== 0 && (
+      {unreadCount > 0 && (
         <Typography className={classes.notification}>{unreadCount}</Typography>
       )}
     </Box>

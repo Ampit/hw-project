@@ -60,10 +60,10 @@ export const clearSearchedUsers = () => {
   };
 };
 
-export const markMessagesRead = (messages, recipientId) => {
+export const markMessagesRead = (recipientId) => {
   return {
     type: MARK_MESSAGE_STATUS,
-    payload: { messages, recipientId },
+    recipientId,
   };
 };
 
@@ -100,7 +100,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case MARK_MESSAGE_STATUS:
-      return markMessagesReadInStore(state, action.payload);
+      return markMessagesReadInStore(state, action.recipientId);
     default:
       return state;
   }
