@@ -33,11 +33,6 @@ const Sidebar = (props) => {
         .filter((conversation) =>
           conversation.otherUser.username.includes(searchTerm)
         )
-        .sort(
-          (convoA, convoB) =>
-            new Date(convoB.messages[convoB.messages.length - 1].updatedAt) -
-            new Date(convoA.messages[convoA.messages.length - 1].updatedAt)
-        )
         .map((conversation) => {
           return (
             <Chat
