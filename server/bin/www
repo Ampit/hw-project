@@ -46,11 +46,11 @@ io.on("connection", (socket) => {
     User.findOne({
       where: { id: socket.decoded_token.id },
     }).then((user) => {
-      socket.user = user;
+      socket.join(user.id);
       postAuthenticate(socket);
     });
   } catch (error) {
-    socket.broadcast.emit("unauthorized", error);
+    socket.emit("unauthorized", error);
   }
 });
 
@@ -64,7 +64,7 @@ const postAuthenticate = (socket) => {
   });
 
   socket.on("new-message", (data) => {
-    socket.broadcast.emit("new-message", {
+    socket.to(data.recipientId).emit("new-message", {
       message: data.message,
       sender: data.sender,
     });
