@@ -3,6 +3,7 @@ import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
+import { markMsgsRead } from "../../store/utils/thunkCreators";
 import { connect } from "react-redux";
 
 const styles = {
@@ -22,6 +23,8 @@ const styles = {
 class Chat extends Component {
   handleClick = async (conversation) => {
     await this.props.setActiveChat(conversation.otherUser.username);
+    if (this.props.conversation.unreadCount > 0)
+      await this.props.markMsgsRead(conversation.otherUser.id);
   };
 
   render() {
@@ -38,7 +41,10 @@ class Chat extends Component {
           online={otherUser.online}
           sidebar={true}
         />
-        <ChatContent conversation={this.props.conversation} />
+        <ChatContent
+          conversation={this.props.conversation}
+          unreadCount={this.props.conversation.unreadCount}
+        />
       </Box>
     );
   }
@@ -48,6 +54,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
+    },
+    markMsgsRead: (recipientId) => {
+      dispatch(markMsgsRead(recipientId));
     },
   };
 };
