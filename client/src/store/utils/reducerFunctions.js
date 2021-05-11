@@ -20,7 +20,7 @@ export const addMessageToStore = (state, payload) => {
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
       if (message.senderId === convoCopy.otherUser.id) {
-        convoCopy.unreadCount = ++convoCopy.unreadCount;
+        convoCopy.unreadCount++;
       }
       return convoCopy;
     } else {
@@ -91,10 +91,11 @@ export const markMessagesReadInStore = (state, recipientId) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
       const convoCopy = { ...convo };
-      convo.messages.forEach((msg) => {
-        if (msg.senderId === recipientId) msg.readStatus = true;
-      });
-      // reset notification count
+      const len = convoCopy.messages.length;
+      for (let i = len - 1; i > convoCopy.unreadCount; i--) {
+        const msg = convoCopy.messages[i];
+        msg.readStatus = true;
+      }
       convoCopy.unreadCount = 0;
       return convoCopy;
     }

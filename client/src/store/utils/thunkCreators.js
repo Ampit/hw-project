@@ -1,5 +1,6 @@
 import axios from "axios";
 import Socket from "../../socket";
+import Cookies from "js-cookie";
 import {
   gotConversations,
   addConversation,
@@ -10,12 +11,11 @@ import {
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
-  const token = await localStorage.getItem("messenger-token");
-  config.headers["x-access-token"] = token;
+  const token = Cookies.get("x-csrf-token");
+  config.headers["x-csrf-token"] = token;
 
   return config;
 });
-
 // USER THUNK CREATORS
 
 export const fetchUser = () => async (dispatch) => {
@@ -36,7 +36,6 @@ export const fetchUser = () => async (dispatch) => {
 export const register = (credentials) => async (dispatch) => {
   try {
     const { data } = await axios.post("/auth/register", credentials);
-    await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
     Socket.instance.emit("go-online", data.id);
   } catch (error) {
@@ -48,7 +47,6 @@ export const register = (credentials) => async (dispatch) => {
 export const login = (credentials) => async (dispatch) => {
   try {
     const { data } = await axios.post("/auth/login", credentials);
-    await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
     Socket.instance.emit("go-online", data.id);
   } catch (error) {
@@ -60,7 +58,6 @@ export const login = (credentials) => async (dispatch) => {
 export const logout = (id) => async (dispatch) => {
   try {
     await axios.delete("/auth/logout");
-    await localStorage.removeItem("messenger-token");
     dispatch(gotUser({}));
     Socket.instance.emit("logout", id);
   } catch (error) {
