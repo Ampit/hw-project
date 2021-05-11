@@ -11,7 +11,8 @@ const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
 const User = require("../db/models/user");
-const socketioJwt = require("socketio-jwt");
+const jwt = require("jsonwebtoken");
+const cookie = require("cookie");
 const onlineUsers = require("../onlineUsers");
 
 /**
@@ -33,12 +34,17 @@ const server = http.createServer(app);
 
 const io = require("socket.io")(server);
 
-io.use(
-  socketioJwt.authorize({
-    secret: process.env.SESSION_SECRET,
-    handshake: true,
-  })
-);
+io.use((socket, next) => {
+  const token = cookie.parse(socket.handshake.headers.cookie)["x-access-token"];
+  if (!token) return next(new Error("Unauthorized. Please Login first"));
+
+  jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
+    if (err) return next(new Error("Unauthorized. token not valid"));
+
+    socket.decoded_token = decoded;
+    return next();
+  });
+});
 
 io.on("connection", (socket) => {
   //this socket is authenticated, we are good to handle more events from it.
