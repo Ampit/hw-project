@@ -10,6 +10,8 @@ require("dotenv").config();
 const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
+const User = require("../db/models/user");
+const socketioJwt = require("socketio-jwt");
 const onlineUsers = require("../onlineUsers");
 
 /**
@@ -31,7 +33,28 @@ const server = http.createServer(app);
 
 const io = require("socket.io")(server);
 
+io.use(
+  socketioJwt.authorize({
+    secret: process.env.SESSION_SECRET,
+    handshake: true,
+  })
+);
+
 io.on("connection", (socket) => {
+  //this socket is authenticated, we are good to handle more events from it.
+  try {
+    User.findOne({
+      where: { id: socket.decoded_token.id },
+    }).then((user) => {
+      socket.join(user.id);
+      postAuthenticate(socket);
+    });
+  } catch (error) {
+    socket.emit("unauthorized", error);
+  }
+});
+
+const postAuthenticate = (socket) => {
   socket.on("go-online", (id) => {
     if (!onlineUsers.includes(id)) {
       onlineUsers.push(id);
@@ -41,7 +64,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
-    socket.broadcast.emit("new-message", {
+    socket.to(data.recipientId).emit("new-message", {
       message: data.message,
       sender: data.sender,
     });
@@ -54,7 +77,7 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
-});
+};
 
 sessionStore
   .sync()
