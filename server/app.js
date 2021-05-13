@@ -19,6 +19,14 @@ const { json, urlencoded } = express;
 
 const app = express();
 
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET,
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+});
+
+app.use(sessionMiddleware);
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
@@ -36,6 +44,7 @@ app.use(function (req, res, next) {
       User.findOne({
         where: { id: decoded.id },
       }).then((user) => {
+        req.session.user = { id: user.id, online: true };
         req.user = user;
         return next();
       });
@@ -72,4 +81,4 @@ app.use(function (err, req, res, next) {
   res.json({ error: err });
 });
 
-module.exports = { app, sessionStore };
+module.exports = { app, sessionStore, sessionMiddleware };
