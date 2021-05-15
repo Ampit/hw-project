@@ -44,7 +44,7 @@ app.use(function (req, res, next) {
       User.findOne({
         where: { id: decoded.id },
       }).then((user) => {
-        req.session.user = { id: user.id, online: true };
+        req.session.user = user;
         req.user = user;
         return next();
       });
