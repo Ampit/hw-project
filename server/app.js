@@ -20,7 +20,7 @@ const { json, urlencoded } = express;
 const app = express();
 
 const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || "very_secret_m6",
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
