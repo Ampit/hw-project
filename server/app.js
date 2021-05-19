@@ -18,9 +18,10 @@ const csrfProtection = csrf({ cookie: true });
 const { json, urlencoded } = express;
 
 const app = express();
+const SECRET = process.env.SESSION_SECRET || "very_secret_6";
 
 const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || "very_secret_m6",
+  secret: SECRET,
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
@@ -37,7 +38,7 @@ app.use(express.static(join(__dirname, "public")));
 app.use(function (req, res, next) {
   const token = req.cookies["x-access-token"];
   if (token) {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
+    jwt.verify(token, SECRET, (err, decoded) => {
       if (err) {
         return next();
       }

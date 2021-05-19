@@ -13,6 +13,7 @@ const db = require("../db");
 const User = require("../db/models/user");
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
+const SECRET = process.env.SESSION_SECRET || "very_secret_6";
 
 /**
  * Get port from environment and store in Express.
@@ -46,7 +47,7 @@ io.use((socket, next) => {
   const token = cookie.parse(socket.handshake.headers.cookie)["x-access-token"];
   if (!token) return next(new Error("Unauthorized. Please Login first"));
 
-  jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
+  jwt.verify(token, SECRET, (err, decoded) => {
     if (err) return next(new Error("Unauthorized. token not valid"));
 
     socket.decoded_token = decoded;
