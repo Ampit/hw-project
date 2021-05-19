@@ -18,7 +18,16 @@ const csrfProtection = csrf({ cookie: true });
 const { json, urlencoded } = express;
 
 const app = express();
+const SECRET = process.env.SESSION_SECRET || "very_secret_6";
 
+const sessionMiddleware = session({
+  secret: SECRET,
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+});
+
+app.use(sessionMiddleware);
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
@@ -29,13 +38,14 @@ app.use(express.static(join(__dirname, "public")));
 app.use(function (req, res, next) {
   const token = req.cookies["x-access-token"];
   if (token) {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
+    jwt.verify(token, SECRET, (err, decoded) => {
       if (err) {
         return next();
       }
       User.findOne({
         where: { id: decoded.id },
       }).then((user) => {
+        req.session.user = user;
         req.user = user;
         return next();
       });
@@ -72,4 +82,4 @@ app.use(function (err, req, res, next) {
   res.json({ error: err });
 });
 
-module.exports = { app, sessionStore };
+module.exports = { app, sessionStore, sessionMiddleware };

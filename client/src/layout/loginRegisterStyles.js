@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     marginRight: "4rem",
   },
   topBarBtn: {
-    boxShadow: "0px 1px 10px #e3e3e3",
+    boxShadow: "0px 1px 10px #c3bbbb",
     padding: "0 2rem",
   },
   formRegister: {

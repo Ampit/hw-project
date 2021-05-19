@@ -6,45 +6,25 @@ import {
   addOnlineUser,
 } from "./store/conversations";
 
-class Socket {
-  constructor() {
-    this.socket = null;
-  }
+const socket = io(window.location.origin, {
+  withCredentials: true,
+  autoConnect: false,
+});
 
-  get instance() {
-    if (!this.socket) this.init();
-    return this.socket;
-  }
+socket.on("connect", () => {
+  socket.on("add-online-user", (id) => {
+    store.dispatch(addOnlineUser(id));
+  });
 
-  init() {
-    let token = localStorage.getItem("messenger-token");
-    // set compatibility for cookie x-access-token later
-    this.socket = io(window.location.origin, {
-      extraHeaders: { Authorization: `Bearer ${token}` },
-    });
+  socket.on("remove-offline-user", (id) => {
+    store.dispatch(removeOfflineUser(id));
+  });
+  socket.on("new-message", (data) => {
+    store.dispatch(setNewMessage(data.message, data.sender));
+  });
+  socket.on("connect_error", (error) => {
+    console.log(error.message);
+  });
+});
 
-    this.socket.on("connect", () => {
-      this.socket.on("add-online-user", (id) => {
-        store.dispatch(addOnlineUser(id));
-      });
-
-      this.socket.on("remove-offline-user", (id) => {
-        store.dispatch(removeOfflineUser(id));
-      });
-      this.socket.on("new-message", (data) => {
-        store.dispatch(setNewMessage(data.message, data.sender));
-      });
-      this.socket.on("unauthorized", (error) => {
-        if (
-          error.data.type === "UnauthorizedError" ||
-          error.data.code === "invalid_token"
-        ) {
-          // redirect user to login page perhaps?
-          console.log("User token has expired. Please Login Again");
-        }
-      });
-    });
-  }
-}
-
-export default new Socket();
+export default socket;

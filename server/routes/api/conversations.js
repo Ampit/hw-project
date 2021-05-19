@@ -1,7 +1,6 @@
 const router = require("express").Router();
-const { User, Conversation, Message } = require("../../db/models");
+const { User, Conversation, Message, Session } = require("../../db/models");
 const { Op } = require("sequelize");
-const onlineUsers = require("../../onlineUsers");
 
 // get all conversations for a user, include latest message text for preview, and all messages
 // include other user model so we have info on username/profile pic (don't include current user info)
@@ -62,7 +61,14 @@ router.get("/", async (req, res, next) => {
       }
 
       // set property for online status of the other user
-      if (onlineUsers.includes(convoJSON.otherUser.id)) {
+      const session = await Session.findOne({
+        where: {
+          data: {
+            [Op.like]: `%"id":${convoJSON.otherUser.id}%`,
+          },
+        },
+      });
+      if (session) {
         convoJSON.otherUser.online = true;
       } else {
         convoJSON.otherUser.online = false;
@@ -72,7 +78,7 @@ router.get("/", async (req, res, next) => {
       convoJSON.latestMessageText =
         convoJSON.messages[convoJSON.messages.length - 1].text;
       conversations[i] = convoJSON;
-      // notification count
+      // notification count , could be improved
       const unreadCount = convoJSON.messages.filter(
         (message) =>
           message.senderId === convoJSON.otherUser.id &&
